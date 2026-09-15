@@ -107,6 +107,6 @@ void exec_instr(Vm *vm, Instr instr) {
     }
 
     if (branch) {
-        vm->reg[REG_PC] = instr.imm;
+        vm->reg[REG_PC] = imm;
     }
 }
