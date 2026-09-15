@@ -20,7 +20,7 @@ void vm_step(Vm *vm) {
 
     Instr instr = decode_instr(raw);
 
-    #ifdef DUMP_ALL_INSTR
+    #if false
     printf("0x%x ", vm->reg[REG_PC]);
     instr_dump(instr, vm);
     printf("\n");
