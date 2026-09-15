@@ -4,6 +4,6 @@
 #include "vm.h"
 #include "instr.h"
 
-void execute(Vm *vm, const Instr *instr);
+void exec_instr(Vm *vm, Instr instr);
 
 #endif

@@ -27,7 +27,7 @@ void vm_step(Vm *vm) {
     size_t size = size_of_layout(instr.layout);
     vm->reg[REG_PC] += size;
 
-    execute(vm, &instr);
+    exec_instr(vm, instr);
 }
 
 void vm_run(Vm *vm) {
