@@ -171,11 +171,17 @@ void instr_dump(Instr instr, const Vm *vm) {
 
     printf("%s", info->mnemonic);
     if(layout_uses_reg_l(info->layout)) {
-        printf(" r%d(%d)", instr.reg_l, vm->reg[instr.reg_l]);
+        printf(" r%d", instr.reg_l);
+        if(vm) {
+            printf("(%d)", vm->reg[instr.reg_l]);
+        }
     }
 
     if(layout_uses_reg_r(info->layout)) {
-        printf(" r%d(%d)", instr.reg_r, vm->reg[instr.reg_r]);
+        printf(" r%d", instr.reg_r);
+        if(vm) {
+            printf("(%d)", vm->reg[instr.reg_r]);
+        }
     }
 
     if(layout_uses_imm16(info->layout) || layout_uses_imm8(info->layout)) {
