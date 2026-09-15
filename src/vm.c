@@ -20,9 +20,11 @@ void vm_step(Vm *vm) {
 
     Instr instr = decode_instr(raw);
 
-    // printf("0x%x ", vm->reg[REG_PC]);
-    // instr_dump(instr, vm);
-    // printf("\n");
+    #ifdef DUMP_ALL_INSTR
+    printf("0x%x ", vm->reg[REG_PC]);
+    instr_dump(instr, vm);
+    printf("\n");
+    #endif
 
     size_t size = size_of_layout(instr.layout);
     vm->reg[REG_PC] += size;
