@@ -12,11 +12,11 @@ typedef enum : uint8_t {
 } Reg;
 
 typedef struct Vm {
-    uint16_t reg[16];
-    Ram ram;
-    void (*trap)(struct Vm *vm);
-    bool exit;
-    bool fault;
+    void        (*trap)(struct Vm *vm);
+    uint16_t    reg[16];
+    Ram         ram;
+    bool        exit;
+    bool        fault;
 } Vm;
 
 void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size);
