@@ -184,7 +184,7 @@ void instr_dump(Instr instr, const Vm *vm) {
         }
     }
 
-    if(layout_uses_imm16(info->layout) || layout_uses_imm8(info->layout)) {
+    if(layout_uses_imm(info->layout)) {
         printf(" %d", instr.imm);
     }
 }
@@ -254,6 +254,10 @@ bool layout_uses_reg_l(Layout layout) {
 
 bool layout_uses_reg_r(Layout layout) {
     return layout == LAYOUT_REG_REG || layout == LAYOUT_REG_REG_IMM16;
+}
+
+bool layout_uses_imm(Layout layout) {
+    return layout_uses_imm8(layout) || layout_uses_imm16(layout);
 }
 
 bool layout_uses_imm8(Layout layout) {

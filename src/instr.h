@@ -71,11 +71,12 @@ void instr_dump(Instr instr, const Vm *vm);
 
 bool layout_uses_reg_l(Layout layout);
 bool layout_uses_reg_r(Layout layout);
+bool layout_uses_imm  (Layout layout);
 bool layout_uses_imm8 (Layout layout);
 bool layout_uses_imm16(Layout layout);
 
 typedef struct InstrInfo {
-    const char *mnemonic;
+    const char  *mnemonic;
     Opcode      opcode;
     Layout      layout;
 } InstrInfo;
