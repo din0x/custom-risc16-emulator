@@ -3,6 +3,7 @@
 #include "instr.h"
 #include "vm.h"
 
+
 Layout layout_of_opcode(Opcode opcode) {
     switch(opcode) {
     case OPCODE_HALT:

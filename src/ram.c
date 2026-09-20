@@ -2,6 +2,7 @@
 #include "ram.h"
 #include "result.h"
 
+
 Result ram_read_8(const Ram *ram, uint8_t *dst, uint16_t addr) {
     if(addr > ram->size) {
         Result r;

@@ -56,15 +56,6 @@ int main(int argc, char **argv) {
 
     free(file_source);
 
-    // if (!asm_result.ok) {
-    //     fprintf(stderr, "assembler error");
-    //     if (asm_result.line > 0) fprintf(stderr, " (line %d)", asm_result.line);
-    //     fprintf(stderr, ": %s\n", asm_result.message);
-    //     return 1;
-    // }
-
-    // return 0;
-
     Vm vm = { 0 };
     vm_init(&vm, code, size);
     vm.trap = trap_print_r3;

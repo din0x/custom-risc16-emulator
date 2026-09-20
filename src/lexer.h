@@ -4,7 +4,6 @@
 #include "result.h"
 #include <stdint.h>
 
-
 typedef enum : uint8_t {
     TOKEN_MNEMONIC,
     TOKEN_REG,
