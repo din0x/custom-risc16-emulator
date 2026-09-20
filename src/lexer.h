@@ -8,7 +8,7 @@
 typedef enum : uint8_t {
     TOKEN_MNEMONIC,
     TOKEN_REG,
-    TOKEN_IMM16,
+    TOKEN_IMM,
     TOKEN_LABEL,
     TOKEN_DEF,
     TOKEN_NEWLINE,
@@ -31,7 +31,7 @@ typedef struct {
     size_t   len;
 } Tokens;
 
-void token_dump(Token tk, Label label);
+void token_dump(char *s, size_t n, Token tk, Label label);
 
 size_t parse_token(const char *src, Token *tk, Label *label, Result *r);
 

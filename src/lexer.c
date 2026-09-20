@@ -18,32 +18,32 @@ enum Parser {
     PARSER_FINISHED  = 4,
 };
 
-void token_dump(Token tk, Label label) {
+void token_dump(char *s, size_t n, Token tk, Label label) {
     switch(tk.kind) {
     case TOKEN_MNEMONIC:
         const InstrInfo *info = instr_info_of_opcode((uint8_t)tk.value);
-        printf("instr(%s)", info->mnemonic);
+        snprintf(s, n, "instr(%s)", info->mnemonic);
         break;
     case TOKEN_REG:
-        printf("reg(r%d)", tk.value);
+        snprintf(s, n, "reg(r%d)", tk.value);
         break;
-    case TOKEN_IMM16:
-        printf("imm(%d)", tk.value);
+    case TOKEN_IMM:
+        snprintf(s, n, "imm(%d)", tk.value);
         break;
     case TOKEN_LABEL:
-        printf("label(%.*s)", label.len, label.start);
+        snprintf(s, n, "label(%.*s)", label.len, label.start);
         break;
     case TOKEN_DEF:
-        printf("def(%.*s)", label.len, label.start);
+        snprintf(s, n, "def(%.*s)", label.len, label.start);
         break;
     case TOKEN_NEWLINE:
-        printf("newline");
+        snprintf(s, n, "newline");
         break;
     case TOKEN_INVALID:
-        printf("invalid");
+        snprintf(s, n, "invalid");
         break;
     case TOKEN_EOF:
-        printf("eof");
+        snprintf(s, n, "eof");
         break;
     default:
         printf("unhandled token kind %x\n", tk.kind);
@@ -115,12 +115,22 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                     memcpy(buf, start, len);
                     buf[len - 1] = '\0';
 
-                    long n = strtol(start + 1, NULL, 10);
+                    char *end;
+                    long n = strtol(start + 1, &end, 10);
 
-                    if(n < 0 || n > 15) {
-                        ERR(r, "not a valid register `%.*s`", len, start);
-                        tk->kind  = TOKEN_INVALID;
-                        tk->value = 0;
+                    if(n < 0 || n > 15 || start + 1 == end) {
+                        // ERR(r, "not a valid register `%.*s`", len, start);
+                        // tk->kind  = TOKEN_INVALID;
+                        // tk->value = 0;
+                        label->start = start;
+                        label->len = len;
+
+                        if(*(src - 1) == ':') {
+                            label->len--;
+                            tk->kind = TOKEN_DEF;
+                        } else {
+                            tk->kind = TOKEN_LABEL;
+                        }
                     } else {
                         tk->kind  = TOKEN_REG;
                         tk->value = (uint16_t)n;
@@ -142,16 +152,15 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                     unsigned long n = strtoul(start, &end, 10);
 
                     if(start == end) {
-                        // printf("invalid ident\n");
+                        ERR(r, "invalid imm `%.*s`", len, start);
                         tk->kind = TOKEN_INVALID;
                         tk->value = 0;
                     } else {
-                        tk->kind = TOKEN_IMM16;
+                        tk->kind = TOKEN_IMM;
                         tk->value = (uint16_t)n;
                     }
                 }
 
-                // printf("instr_or_operand: %d, `%.*s`\n", len, len, start);
                 src--;
                 parser = PARSER_FINISHED;
                 continue;

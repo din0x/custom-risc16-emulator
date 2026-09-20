@@ -18,10 +18,10 @@ typedef enum : uint8_t {
 } Layout;
 
 typedef enum : uint8_t {
-    OPCODE_HALT           = 0x00,
     OPCODE_RET            = 0x01,
     OPCODE_DUMP           = 0x02,
     OPCODE_TRAP           = 0x03,
+    OPCODE_HALT           = 0x04,
 
     OPCODE_LD             = 0x10,
     OPCODE_ST             = 0x11,
@@ -64,8 +64,8 @@ bool is_layout_packed(Layout layout);
 
 size_t size_of_layout(Layout layout);
 
-uint32_t encode_instr(Instr instr);
-Instr decode_instr(uint32_t raw);
+uint32_t encode_instr(Instr  instr);
+Instr    decode_instr(uint32_t raw);
 
 void instr_dump(Instr instr, const Vm *vm);
 
@@ -77,8 +77,8 @@ bool layout_uses_imm16(Layout layout);
 
 typedef struct InstrInfo {
     const char  *mnemonic;
-    Opcode      opcode;
-    Layout      layout;
+    Opcode       opcode;
+    Layout       layout;
 } InstrInfo;
 
 const InstrInfo *instr_info_of_opcode(Opcode opcode);

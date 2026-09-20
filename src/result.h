@@ -8,12 +8,10 @@ typedef struct {
     char *err;
 } Result;
 
-#define ERR(...) do {                               \
-    Result __result;                                \
+#define ERR(__r, ...) do {                          \
     size_t __len = snprintf(NULL, 0, __VA_ARGS__);  \
-    __result.err = (char *)malloc(__len + 1);       \
-    snprintf(__result.err, __len, __VA_ARGS__);     \
-    return __result;                                \
+    (__r)->err = (char *)malloc(__len + 1);         \
+    snprintf((__r)->err, __len + 1, __VA_ARGS__);   \
 } while(0);
 
 #define OK do {                                     \
