@@ -130,8 +130,6 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 defs[defs_count].val  = ptr;
                 defs_count++;
 
-                token_dump(scratch, n, tk, label);
-                printf("%s\n", scratch);
                 state = STATE_INSTR_OR_DEF;
                 break;
             case TOKEN_NEWLINE:
@@ -184,8 +182,6 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
             }
             else if(tk.kind == TOKEN_LABEL) {
                 instr.imm = 62;
-                token_dump(scratch, n, tk, label);
-                printf("%s\n", scratch);
                 next_state_of_layout(&state, info->layout);
 
                 imm_label     = label.start;
@@ -274,6 +270,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
         src += ate;
     }
 
+    #if false
     for(size_t i = 0; i < defs_count; i++) {
         printf("%.*s: 0x%x\n", defs[i].len, defs[i].name, defs[i].val);
     }
@@ -281,6 +278,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
     for(size_t i = 0; i < links_count; i++) {
         printf("link(%.*s) @ 0x%x\n", links[i].len, links[i].name, links[i].addr);
     }
+    #endif
 
     for(size_t i = 0; i < links_count; i++) {
         bool linked = false;
