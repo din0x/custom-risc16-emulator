@@ -9,6 +9,8 @@ typedef struct {
     char *err;
 } Result;
 
+void result_deinit(Result *r);
+
 #define ERR(__r, ...) do {                          \
     size_t __len = snprintf(NULL, 0, __VA_ARGS__);  \
     (__r)->err = (char *)malloc(__len + 1);         \

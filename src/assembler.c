@@ -103,7 +103,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
 
         if(r.err) {
             cb(&r);
-            r.err = NULL;
+            result_deinit(&r);
         }
 
         switch(state) {
@@ -121,7 +121,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 if(defs_count >= defs_cap) {
                     ERR(&r, "defs overflow, max=%d", defs_cap);
                     cb(&r);
-                    r.err = NULL;
+                    result_deinit(&r);
                     goto defer;
                 }
 
@@ -139,7 +139,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 token_dump(scratch, n, tk, label);
                 ERR(&r, "unexpected token: %s", scratch);
                 cb(&r);
-                r.err = NULL;
+                result_deinit(&r);
             }
             break;
 
@@ -151,7 +151,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 token_dump(scratch, n, tk, label);
                 ERR(&r, "expected reg l, found token: %s", scratch);
                 cb(&r);
-                r.err = NULL;
+                result_deinit(&r);
                 goto defer;
             }
             break;
@@ -164,7 +164,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 token_dump(scratch, n, tk, label);
                 ERR(&r, "expected reg r, found token: %s", scratch);
                 cb(&r);
-                r.err = NULL;
+                result_deinit(&r);
                 goto defer;
             }
             break;
@@ -174,7 +174,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 if(layout_uses_imm8(info->layout) && tk.value > 0xff) {
                     ERR(&r, "imm to large 0x%x, max=0xff", tk.value);
                     cb(&r);
-                    r.err = NULL;
+                    result_deinit(&r);
                 }
 
                 instr.imm = tk.value;
@@ -191,7 +191,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 token_dump(scratch, n, tk, label);
                 ERR(&r, "expected imm, found token: %s", scratch);
                 cb(&r);
-                r.err = NULL;
+                result_deinit(&r);
                 goto defer;
             }
             break;
@@ -207,7 +207,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                     if(ptr >= cap) {
                         ERR(&r, "code buffer overflow, cap=%d", cap);
                         cb(&r);
-                        r.err = NULL;
+                        result_deinit(&r);
                         goto defer;
                     }
 
@@ -232,7 +232,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                     if(links_count >= links_cap) {
                         ERR(&r, "too many labels, max=%d", links_cap);
                         cb(&r);
-                        r.err = NULL;
+                        result_deinit(&r);
                         goto defer;
                     }
 
@@ -245,7 +245,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 case LAYOUT_REG_IMM8:
                     ERR(&r, "expected 8bit imm found label `%.*s`", imm_label_len, imm_label);
                     cb(&r);
-                    r.err = NULL;
+                    result_deinit(&r);
                     break;
                 case LAYOUT_NONE:
                 case LAYOUT_REG_REG:
@@ -261,7 +261,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 token_dump(scratch, n, tk, label);
                 ERR(&r, "expected newline, found: %s", scratch);
                 cb(&r);
-                r.err = NULL;
+                result_deinit(&r);
                 break;
             }
             break;
@@ -297,7 +297,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
         if(!linked) {
             ERR(&r, "undefined symbol `%.*s`", link.len, link.name);
             cb(&r);
-            r.err = NULL;
+            result_deinit(&r);
         }
     }
 
