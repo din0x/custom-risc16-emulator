@@ -194,7 +194,7 @@ static const InstrInfo INSTR_INFOS[] = {
     { "halt",  OPCODE_HALT, LAYOUT_NONE  },
     { "ret",   OPCODE_RET, LAYOUT_NONE   },
     { "dump",  OPCODE_DUMP, LAYOUT_NONE  },
-    { "trap",   OPCODE_TRAP, LAYOUT_NONE  },
+    { "trap",  OPCODE_TRAP, LAYOUT_NONE  },
 
     { "ld",    OPCODE_LD, LAYOUT_REG_REG    },
     { "st",    OPCODE_ST, LAYOUT_REG_REG    },
@@ -236,7 +236,8 @@ const InstrInfo *instr_info_of_opcode(Opcode opcode) {
 
 const InstrInfo *instr_info_of_mnemonic(const char *mnemonic, size_t len) {
     for (size_t i = 0; i < INSTR_INFO_COUNT; i++) {
-        if (!strncmp(INSTR_INFOS[i].mnemonic, mnemonic, len)) {
+        const char *mne = INSTR_INFOS[i].mnemonic;
+        if (!strncmp(mne, mnemonic, len) && mne[len] == '\0') {
             return &INSTR_INFOS[i];
         }
     }
