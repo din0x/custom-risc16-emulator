@@ -4,9 +4,15 @@ The project implements a custom variable-length instruction set architecture (IS
 
 ## Build
 
-By default the Makefile uses clang, to change that modify the `CC` in the Makefile.
-To build the project run
-
+```make
+CC      := clang
+CFLAGS  := -Wall -Wextra -std=c23 -O2 -D_CRT_SECURE_NO_WARNINGS
 ```
-make clean run ARGS="demo.asm"
+
+```fish
+make                           # alias for: make build
+
+make build                     # complie and link the project
+make run ARGS=counter.asm      # run
+make clean                     # cleanup the target/ directory
 ```
