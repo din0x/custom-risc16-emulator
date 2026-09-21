@@ -87,9 +87,9 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
     char scratch[n + 1];
     scratch[n] = '\0';
 
-    size_t defs_count = 0;
-    size_t defs_cap   = 2048;
-    struct Def *defs  = malloc(defs_cap * sizeof(struct Def));
+    size_t defs_count  = 0;
+    size_t defs_cap    = 2048;
+    struct Def *defs   = malloc(defs_cap * sizeof(struct Def));
 
     size_t links_count = 0;
     size_t links_cap   = 2048;
@@ -122,7 +122,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                     ERR(&r, "defs overflow, max=%d", defs_cap);
                     cb(&r);
                     r.err = NULL;
-                    return;
+                    goto defer;
                 }
 
                 defs[defs_count].name = label.start;
@@ -152,7 +152,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 ERR(&r, "expected reg l, found token: %s", scratch);
                 cb(&r);
                 r.err = NULL;
-                return;
+                goto defer;
             }
             break;
 
@@ -165,7 +165,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 ERR(&r, "expected reg r, found token: %s", scratch);
                 cb(&r);
                 r.err = NULL;
-                return;
+                goto defer;
             }
             break;
 
@@ -192,7 +192,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 ERR(&r, "expected imm, found token: %s", scratch);
                 cb(&r);
                 r.err = NULL;
-                return;
+                goto defer;
             }
             break;
 
@@ -208,7 +208,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                         ERR(&r, "code buffer overflow, cap=%d", cap);
                         cb(&r);
                         r.err = NULL;
-                        return;
+                        goto defer;
                     }
 
                     uint8_t byte = (encoded >> (24 - i * 8)) & 0xff;
@@ -233,7 +233,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                         ERR(&r, "too many labels, max=%d", links_cap);
                         cb(&r);
                         r.err = NULL;
-                        return;
+                        goto defer;
                     }
 
                     links[links_count].name = imm_label;
@@ -300,4 +300,9 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
             r.err = NULL;
         }
     }
+
+defer:
+    free(defs );
+    free(links);
+    return;
 }
