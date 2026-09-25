@@ -9,7 +9,7 @@
 
 void exec_trap(Vm *vm) {
     if (vm->trap == NULL) {
-        vm_fault(vm, "unhandled trap");
+        ERR(&vm->fault, "unhandled trap");
         return;
     }
     (vm->trap)(vm);
@@ -21,7 +21,6 @@ void exec_instr(Vm *vm, Instr instr) {
     uint16_t imm    = instr.imm;
 
     bool     branch = false;
-    Result   res    = { 0 };
 
     switch (instr.opcode) {
     case OPCODE_HALT:
@@ -49,10 +48,10 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
 
     case OPCODE_LD:
-        res = ram_read_16(&vm->ram, l, *r);
+        vm->fault = ram_read_16(&vm->ram, l, *r);
         break;
     case OPCODE_ST:
-        res = ram_write_16(&vm->ram, *l, *r);
+        vm->fault = ram_write_16(&vm->ram, *l, *r);
         break;
     case OPCODE_ADD:
         *l += *r;
@@ -65,17 +64,17 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
     case OPCODE_DIV:
         if(*r == 0) {
-            vm_fault(vm, "division by zero");
-            return;
+            ERR(&vm->fault, "division by zero ");
+        } else {
+            *l = *l / *r;
         }
-        *l = *l / *r;
         break;
     case OPCODE_MOD:
         if(*r == 0) {
-            vm_fault(vm, "modulo by zero");
-            return;
+            ERR(&vm->fault, "modulo by zero");
+        } else {
+            *l = *l % *r;
         }
-        *l = *l % *r;
         break;
     case OPCODE_OR:
         *l |= *r;
@@ -104,13 +103,13 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
 
     default:
-        vm_fault(vm, "unknown opcode");
+        ERR(&vm->fault, "unknown opcode");
         printf("opcode was 0x%02x at pc=todo\n", instr.opcode);
         break;
     }
 
-    if(res.err) {
-        vm_fault(vm, res.err);
+    if(vm->fault.err) {
+        vm->exit = true;
     }
 
     if(branch) {

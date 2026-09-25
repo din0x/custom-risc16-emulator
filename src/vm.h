@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "ram.h"
+#include "result.h"
 
 typedef enum : uint8_t {
     REG_0      = 0x0,
@@ -35,8 +36,8 @@ typedef struct Vm {
     void        (*trap)(struct Vm *vm);
     uint16_t    reg[16];
     Ram         ram;
+    Result      fault;
     bool        exit;
-    bool        fault;
 } Vm;
 
 void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size);
@@ -44,7 +45,6 @@ void vm_step(Vm *vm);
 void vm_run(Vm *vm);
 void vm_do_call(Vm *vm, uint16_t target);
 void vm_do_ret(Vm *vm);
-void vm_fault(Vm *vm, const char *msg);
 void vm_dbg_dump(Vm *vm);
 
 #endif

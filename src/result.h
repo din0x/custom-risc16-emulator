@@ -12,6 +12,7 @@ typedef struct {
 void result_deinit(Result *r);
 
 #define ERR(__r, ...) do {                          \
+    result_deinit(__r);                             \
     size_t __len = snprintf(NULL, 0, __VA_ARGS__);  \
     (__r)->err = (char *)malloc(__len + 1);         \
     snprintf((__r)->err, __len + 1, __VA_ARGS__);   \

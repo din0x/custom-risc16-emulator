@@ -59,12 +59,6 @@ void vm_do_ret(Vm *vm) {
     vm->reg[REG_SP] = sp + 2; // TODO: stack overflow
 }
 
-void vm_fault(Vm *vm, const char *msg) {
-    printf("fault: %s\n", msg);
-    vm->fault = true;
-    vm->exit = true;
-}
-
 void vm_dbg_dump(Vm *vm) {
     printf("-- dbg --\n");
     for (int i = 0; i < 16; i++) {

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "assembler.h"
+#include "result.h"
 #include "vm.h"
 
 
@@ -62,9 +63,10 @@ int main(int argc, char **argv) {
 
     vm_run(&vm);
 
-    if (vm.fault) {
-        fprintf(stderr, "execution halted due to fault\n");
+    if(vm.fault.err) {
+        fprintf(stderr, "fault: %s\n", vm.fault.err);
 
+        result_deinit(&vm.fault);
         free(code);
         return 1;
     }
