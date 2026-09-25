@@ -103,8 +103,7 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
 
     default:
-        ERR(&vm->fault, "unknown opcode");
-        printf("opcode was 0x%02x at pc=todo\n", instr.opcode);
+        ERR(&vm->fault, "unknown opcode(opcode=0x%02x, pc=0x%04x)", instr.opcode, vm->reg[REG_PC]);
         break;
     }
 
