@@ -63,6 +63,8 @@ void vm_dbg_dump(Vm *vm) {
     printf("-- dbg --\n");
     for (int i = 0; i < 16; i++) {
         printf("r%-2d=%5u (0x%04x)  ", i, vm->reg[i], vm->reg[i]);
-        if (i % 4 == 3) printf("\n");
+        if (i % 4 == 3) {
+            printf("\n");
+        }
     }
 }
