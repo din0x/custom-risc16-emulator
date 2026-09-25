@@ -62,22 +62,22 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
     const char *instr_or_operand_start = 0;
     size_t      instr_or_operand_len   = 0;
 
-    for(; *src; src++) {
-        if(*src == '\n') {
-            tk->kind = TOKEN_NEWLINE;
-            tk->value = '\n';
-            parser = PARSER_FINISHED;
-            continue;
-        }
-
-        if(parser == PARSER_ANY) {
-            if(*src == ';') {
+    for(;; src++) {
+        switch(parser) {
+        case PARSER_ANY:
+            if(*src == '\n') {
+                tk->kind = TOKEN_NEWLINE;
+                tk->value = '\n';
+                parser = PARSER_FINISHED;
+            }
+            else if(*src == ';') {
                 parser = PARSER_COMMENT;
             }
             else if(isalnum(*src) || *src == '_' || *src == ':') {
                 parser = PARSER_IDENT;
                 instr_or_operand_start = src;
                 instr_or_operand_len   = 0;
+                src--;
             }
             else if(isspace(*src)) {
                 continue;
@@ -89,9 +89,8 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                 parser = PARSER_FINISHED;
                 continue;
             }
-        }
+            break;
 
-        switch(parser) {
         case PARSER_COMMENT:
             if(*src == '\n') {
                 parser = PARSER_ANY;
@@ -119,9 +118,6 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                     long n = strtol(start + 1, &end, 10);
 
                     if(n < 0 || n > 15 || start + 1 == end) {
-                        // ERR(r, "not a valid register `%.*s`", len, start);
-                        // tk->kind  = TOKEN_INVALID;
-                        // tk->value = 0;
                         label->start = start;
                         label->len = len;
 
@@ -171,7 +167,6 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
 
         case PARSER_FINISHED:
             return src - start;
-            break;
 
         default:
             printf("unhandled parser state: %x\n", parser);

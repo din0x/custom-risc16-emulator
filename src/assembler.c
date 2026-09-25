@@ -99,11 +99,19 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
     size_t links_cap   = 2048;
     struct Link *links = malloc(links_cap * sizeof(struct Link));
 
-    while(*src) {
-        Label label;
-        Token tk;
+    bool cond = true;
+    while(cond) {
+        size_t ate;
+        Token  tk    = { 0 };
+        Label  label = { 0 };
 
-        size_t ate = parse_token(src, &tk, &label, &r);
+        if(*src) {
+            ate = parse_token(src, &tk, &label, &r);
+        } else {
+            ate = 0;
+            tk.kind = TOKEN_EOF;
+            cond = false;
+        }
 
         if(r.err) {
             cb(&r);
