@@ -4,7 +4,7 @@
 
 
 Result ram_read_8(const Ram *ram, uint8_t *dst, uint16_t addr) {
-    if(addr > ram->size) {
+    if(addr >= ram->size) {
         Result r;
         ERR(&r, "read(%x): out of bounds, size=%x", addr, ram->size);
         return r;
@@ -23,7 +23,7 @@ Result ram_read_16(const Ram *ram, uint16_t *dst, uint16_t addr) {
 }
 
 Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
-    if(addr > ram->size) {
+    if(addr >= ram->size) {
         Result r;
         ERR(&r, "write(%x): out of bounds, size=%x", addr, ram->size);
         return r;
@@ -34,7 +34,7 @@ Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
 }
 
 Result ram_write_16(Ram *ram, uint16_t addr, uint16_t val) {
-    uint8_t h = (val & 0xff00 >> 8);
+    uint8_t h = (val & 0xff00) >> 8;
     uint8_t l =  val & 0xff;
 
     TRY(ram_write_8(ram, addr,     h));

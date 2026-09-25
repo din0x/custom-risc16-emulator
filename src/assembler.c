@@ -72,6 +72,10 @@ void next_state_of_layout(State *state, Layout layout) {
     }
 }
 
+size_t min_sz(size_t a, size_t b) {
+    return a < b ? a : b;
+}
+
 void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
     const InstrInfo *info;
     Instr instr = { 0 };
@@ -287,7 +291,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
         for(size_t j = 0; j < defs_count; j++) {
             struct Def def = defs[j];
 
-            if(link.len == def.len && !strncmp(link.name, def.name, min(link.len, def.len))) {
+            if(link.len == def.len && !strncmp(link.name, def.name, min_sz(link.len, def.len))) {
                 code[link.addr]     = (def.val >> 8) & 0xff;
                 code[link.addr + 1] =  def.val       & 0xff;
                 linked = true;

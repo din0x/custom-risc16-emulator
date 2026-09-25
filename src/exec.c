@@ -4,6 +4,7 @@
 #include "exec.h"
 #include "instr.h"
 #include "ram.h"
+#include "result.h"
 
 
 void exec_trap(Vm *vm) {
@@ -18,7 +19,9 @@ void exec_instr(Vm *vm, Instr instr) {
     uint16_t *l     = &vm->reg[instr.reg_l];
     uint16_t *r     = &vm->reg[instr.reg_r];
     uint16_t imm    = instr.imm;
+
     bool     branch = false;
+    Result   res    = { 0 };
 
     switch (instr.opcode) {
     case OPCODE_HALT:
@@ -46,10 +49,10 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
 
     case OPCODE_LD:
-        ram_read_16(&vm->ram, l, *r);
+        res = ram_read_16(&vm->ram, l, *r);
         break;
     case OPCODE_ST:
-        ram_write_16(&vm->ram, *l, *r);
+        res = ram_write_16(&vm->ram, *l, *r);
         break;
     case OPCODE_ADD:
         *l += *r;
@@ -61,14 +64,14 @@ void exec_instr(Vm *vm, Instr instr) {
         *l *= *r;
         break;
     case OPCODE_DIV:
-        if (*r == 0) {
+        if(*r == 0) {
             vm_fault(vm, "division by zero");
             return;
         }
         *l = *l / *r;
         break;
     case OPCODE_MOD:
-        if (*r == 0) {
+        if(*r == 0) {
             vm_fault(vm, "modulo by zero");
             return;
         }
@@ -106,7 +109,11 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
     }
 
-    if (branch) {
+    if(res.err) {
+        vm_fault(vm, res.err);
+    }
+
+    if(branch) {
         vm->reg[REG_PC] = imm;
     }
 }
