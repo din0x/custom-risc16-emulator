@@ -117,7 +117,7 @@ Instr decode_instr(uint32_t raw) {
     Layout layout = layout_of_opcode(opcode);
 
     if(is_opcode_packed(opcode) != is_layout_packed(layout)) {
-        printf("decode opcode(%x) and layout(%x) mismatch\n", opcode, layout);
+        printf("decode opcode(0x%x) and layout(0x%x) mismatch\n", opcode, layout);
         instr.opcode = 0xff;
         return instr;
     }

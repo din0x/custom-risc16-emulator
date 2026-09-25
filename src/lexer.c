@@ -46,7 +46,7 @@ void token_dump(char *s, size_t n, Token tk, Label label) {
         snprintf(s, n, "eof");
         break;
     default:
-        printf("unhandled token kind %x\n", tk.kind);
+        printf("unhandled token kind 0x%x\n", tk.kind);
         exit(1);
     }
 }
@@ -169,7 +169,7 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
             return src - start;
 
         default:
-            printf("unhandled parser state: %x\n", parser);
+            printf("unhandled parser state: 0x%x\n", parser);
             exit(1);
             break;
         }
