@@ -64,7 +64,7 @@ void exec_instr(Vm *vm, Instr instr) {
         break;
     case OPCODE_DIV:
         if(*r == 0) {
-            ERR(&vm->fault, "division by zero ");
+            ERR(&vm->fault, "division by zero");
         } else {
             *l = *l / *r;
         }
