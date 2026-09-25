@@ -131,7 +131,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                 break;
             case TOKEN_DEF:
                 if(defs_count >= defs_cap) {
-                    ERR(&r, "defs overflow, max=%d", defs_cap);
+                    ERR(&r, "defs overflow, max=%zu", defs_cap);
                     cb(&r);
                     result_deinit(&r);
                     goto defer;
@@ -242,7 +242,7 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
                     imm_addr += 1;
 
                     if(links_count >= links_cap) {
-                        ERR(&r, "too many labels, max=%d", links_cap);
+                        ERR(&r, "too many labels, max=%zu", links_cap);
                         cb(&r);
                         result_deinit(&r);
                         goto defer;
