@@ -61,7 +61,7 @@ uint8_t vm_pop_8(Vm *vm) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp >= vm->ram.size) {
-        ERR(&vm->fault, "stack underflow, sp=0x%40x, size=0x%40x", *sp, vm->ram.size);
+        ERR(&vm->fault, "stack underflow, sp=0x%04x, size=0x%04x", *sp, vm->ram.size);
         return 0;
     }
 
@@ -81,7 +81,7 @@ void vm_push_8(Vm *vm, uint8_t val) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp == 0 || *sp <= vm->stack_bound) {
-        ERR(&vm->fault, "stack overflow, sp=0x%40x, bound=0x%40x", *sp, vm->stack_bound);
+        ERR(&vm->fault, "stack overflow, sp=0x%04x, bound=0x%04x", *sp, vm->stack_bound);
         return;
     }
 
