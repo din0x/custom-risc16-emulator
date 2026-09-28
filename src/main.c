@@ -59,7 +59,8 @@ int main(int argc, char **argv) {
 
     Vm vm = { 0 };
     vm_init(&vm, code, size);
-    vm.trap = trap_print_r3;
+    vm.trap        = trap_print_r3;
+    vm.stack_bound = 512;
 
     vm_run(&vm);
 

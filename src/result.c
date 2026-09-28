@@ -1,6 +1,10 @@
 #include "result.h"
 
 
+void result_init(Result *r) {
+    *r->err = 0;
+}
+
 void result_deinit(Result *r) {
     if(r && r->err) {
         free(r->err);

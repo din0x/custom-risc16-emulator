@@ -9,6 +9,7 @@ typedef struct {
     char *err;
 } Result;
 
+void result_init(Result *r);
 void result_deinit(Result *r);
 
 #define ERR(__r, ...) do {                          \

@@ -35,9 +35,10 @@ typedef enum : uint8_t {
 typedef struct Vm {
     void        (*trap)(struct Vm *vm);
     uint16_t    reg[16];
+    uint16_t    stack_bound;
+    bool        exit;
     Ram         ram;
     Result      fault;
-    bool        exit;
 } Vm;
 
 void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size);
