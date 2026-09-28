@@ -2,7 +2,7 @@
 
 
 void result_init(Result *r) {
-    *r->err = 0;
+    r->err = NULL;
 }
 
 void result_deinit(Result *r) {
