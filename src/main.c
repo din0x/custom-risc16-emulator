@@ -15,7 +15,8 @@ void trap_print_r3(Vm *vm) {
     printf("%d\n", vm->reg[REG_3]);
 }
 
-void cb(Result *r) {
+void cb(Result *r, bool *cx) {
+    *cx = true;
     if(r && r->err) {
         fprintf(stderr, "error: %s\n", r->err);
     }
@@ -144,7 +145,13 @@ int main(int argc, char **argv) {
         src[read] = '\0';
         fclose(file);
 
-        code_end = assemble((const char*)src, code, size, cb);
+        bool err = false;
+        code_end = assemble((const char*)src, code, size, (void(*))cb, &err);
+
+        if(err) {
+            return 1;
+        }
+
         free(src);
     }
     else if(args.bin) {

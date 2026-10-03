@@ -133,19 +133,19 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                         tk->value = (uint16_t)n;
                     }
                 }
-                else if(!strncmp(start, "pc", len)) {
+                else if(!strncmp(start, "pc", len) && len == 2) {
                     label->start = start;
                     label->len = len;
                     tk->kind  = TOKEN_REG;
                     tk->value = (uint16_t)REG_PC;
                 }
-                else if(!strncmp(start, "sp", len)) {
+                else if(!strncmp(start, "sp", len) && len == 2) {
                     label->start = start;
                     label->len = len;
                     tk->kind  = TOKEN_REG;
                     tk->value = (uint16_t)REG_SP;
                 }
-                else if(!strncmp(start, "flags", len)) {
+                else if(!strncmp(start, "flags", len) && len == 5) {
                     label->start = start;
                     label->len = len;
                     tk->kind  = TOKEN_REG;
