@@ -9,7 +9,13 @@
 uint8_t fetch_next_byte(Vm *vm, uint16_t offset) {
     uint16_t pc = vm->reg[REG_PC];
     uint8_t byte = 0;
-    vm->fault = ram_read_8(&vm->ram, &byte, pc + offset);
+
+    Result r = ram_read_8(&vm->ram, &byte, pc + offset);
+    if(r.err) {
+        result_deinit(&vm->fault);
+        vm->fault = r;
+    }
+
     return byte;
 }
 
@@ -19,6 +25,10 @@ void vm_step(Vm *vm) {
     uint32_t c = fetch_next_byte(vm, 2);
     uint32_t d = fetch_next_byte(vm, 3);
     uint32_t raw = (a << 24) | (b << 16) | (c << 8) | d;
+
+    if(vm->fault.err) {
+        return;
+    }
 
     Instr instr = decode_instr(raw);
     if(instr.opcode == 0xff) {
