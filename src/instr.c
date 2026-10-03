@@ -192,42 +192,6 @@ void instr_dump(Instr instr, const Vm *vm) {
     }
 }
 
-static const InstrInfo INSTR_INFOS[] = {
-    { "halt",  OPCODE_HALT, LAYOUT_NONE  },
-    { "ret",   OPCODE_RET, LAYOUT_NONE   },
-    { "dump",  OPCODE_DUMP, LAYOUT_NONE  },
-    { "trap",  OPCODE_TRAP, LAYOUT_NONE  },
-
-    { "ld",    OPCODE_LD, LAYOUT_REG_REG    },
-    { "st",    OPCODE_ST, LAYOUT_REG_REG    },
-    { "add",   OPCODE_ADD, LAYOUT_REG_REG   },
-    { "sub",   OPCODE_SUB, LAYOUT_REG_REG   },
-    { "mul",   OPCODE_MUL, LAYOUT_REG_REG   },
-    { "div",   OPCODE_DIV, LAYOUT_REG_REG   },
-    { "mod",   OPCODE_MOD, LAYOUT_REG_REG   },
-    { "or",    OPCODE_OR, LAYOUT_REG_REG    },
-    { "xor",   OPCODE_XOR, LAYOUT_REG_REG   },
-    { "and",   OPCODE_AND, LAYOUT_REG_REG   },
-    { "nand",  OPCODE_NAND,  LAYOUT_REG_REG  },
-
-    { "br",    OPCODE_BREQ, LAYOUT_REG_REG_IMM16  },
-    { "brgt",  OPCODE_BRGT, LAYOUT_REG_REG_IMM16  },
-    { "br>",   OPCODE_BRGT, LAYOUT_REG_REG_IMM16  },
-    { "brlt",  OPCODE_BRLT, LAYOUT_REG_REG_IMM16  },
-    { "br<",   OPCODE_BRLT, LAYOUT_REG_REG_IMM16  },
-    { "brne",  OPCODE_BRNE, LAYOUT_REG_REG_IMM16  },
-    { "br<>",  OPCODE_BRNE, LAYOUT_REG_REG_IMM16  },
-
-    { "mov8",  OPCODE_MOV8, LAYOUT_REG_IMM8  },
-    { "mov16", OPCODE_MOV16, LAYOUT_REG_IMM16 },
-    { "call",  OPCODE_CALL, LAYOUT_REG },
-    { "push16", OPCODE_PUSH16, LAYOUT_REG },
-    { "pop16", OPCODE_POP16, LAYOUT_REG },
-    { "calli", OPCODE_CALL16, LAYOUT_IMM16 },
-};
-
-const size_t INSTR_INFO_COUNT = sizeof INSTR_INFOS / sizeof *INSTR_INFOS;
-
 const InstrInfo *instr_info_of_opcode(Opcode opcode) {
     for (size_t i = 0; i < INSTR_INFO_COUNT; i++) {
         if (INSTR_INFOS[i].opcode == opcode) {

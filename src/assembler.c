@@ -76,7 +76,7 @@ size_t min_sz(size_t a, size_t b) {
     return a < b ? a : b;
 }
 
-void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
+size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
     const InstrInfo *info;
     Instr instr = { 0 };
     State state = STATE_INSTR_OR_DEF;
@@ -316,5 +316,5 @@ void assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r)) {
 defer:
     free(defs );
     free(links);
-    return;
+    return ptr;
 }
