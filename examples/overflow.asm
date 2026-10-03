@@ -1,0 +1,2 @@
+main:
+    calli   main
