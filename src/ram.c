@@ -11,7 +11,7 @@ Result ram_read_8(const Ram *ram, uint8_t *dst, uint16_t addr) {
     }
 
     *dst = ram->buf[addr];
-    OK
+    OK;
 }
 
 Result ram_read_16(const Ram *ram, uint16_t *dst, uint16_t addr) {
@@ -19,7 +19,7 @@ Result ram_read_16(const Ram *ram, uint16_t *dst, uint16_t addr) {
     TRY(ram_read_8(ram, &h, addr    ));
     TRY(ram_read_8(ram, &l, addr + 1));
     *dst = (uint16_t)h << 8 | (uint16_t)l;
-    OK
+    OK;
 }
 
 Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
@@ -30,7 +30,7 @@ Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
     }
 
     ram->buf[addr] = val;
-    OK
+    OK;
 }
 
 Result ram_write_16(Ram *ram, uint16_t addr, uint16_t val) {
@@ -40,5 +40,5 @@ Result ram_write_16(Ram *ram, uint16_t addr, uint16_t val) {
     TRY(ram_write_8(ram, addr,     h));
     TRY(ram_write_8(ram, addr + 1, l));
 
-    OK
+    OK;
 }
