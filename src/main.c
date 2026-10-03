@@ -23,7 +23,9 @@ void cb(Result *r, bool *cx) {
 }
 
 void print_instr_info(const InstrInfo *info) {
-    printf("0x%02x | %-6s | ", info->opcode, info->mnemonic);
+    char mnemonic[64];
+    snprintf(mnemonic, sizeof(mnemonic), "%s,", info->mnemonic);
+    printf("0x%02x, %-7s ", info->opcode, mnemonic);
 
     if(layout_uses_reg_l(info->layout)) {
         printf("l");
@@ -49,7 +51,7 @@ void print_instr_info(const InstrInfo *info) {
         printf("--");
     }
 
-    printf(" |");
+    printf(",");
 
     char fill = ' ';
     char bits[33];
@@ -82,9 +84,9 @@ void print_instr_info(const InstrInfo *info) {
         break;
     }
 
-    for (size_t i = 0; i < 32; i++) {
-        if (bits[i] == 'k') {
-            bits[i] = (info->opcode & (1u << (6 - i))) ? '1' : '0';
+    for(size_t i = 0; i < 32; i++) {
+        if(bits[i] == 'k') {
+            bits[i] = (info->opcode & (0x80 >> i)) ? '1' : '0';
         }
         if(bits[i] == '\0') {
             bits[i] = fill;
@@ -101,6 +103,27 @@ void print_instr_info(const InstrInfo *info) {
     printf("\n");
 }
 
+void print_reg_info(const RegInfo *info) {
+    printf("r%d, ", info->encoding);
+    if(info->encoding < 0xa) {
+        printf(" ");
+    }
+
+    printf("0x%x, ", info->encoding);
+
+    if(info->name) {
+        size_t name_len = strlen(info->name);
+        printf("%s, ", info->name);
+        for(size_t i = 0; i < 5 - name_len; i++) {
+            printf(" ");
+        }
+    } else {
+        printf(",      ");
+    }
+
+    printf("%s\n", info->role);
+}
+
 int main(int argc, char **argv) {
     Args args;
     parse_args(&args, argc, argv);
@@ -111,10 +134,20 @@ int main(int argc, char **argv) {
     }
 
     if(args.isa) {
+        printf("Opcode, Mnemonic, Operands, Bits\n");
+
         for(size_t i = 0; i < INSTR_INFO_COUNT; i++) {
             const InstrInfo *info = &INSTR_INFOS[i];
             print_instr_info(info);
         }
+
+        printf("\nRegister, Encoding, Name, Role\n");
+
+        for(size_t i = 0; i < REG_INFOS_COUNT; i++) {
+            const RegInfo *info = &REG_INFOS[i];
+            print_reg_info(info);
+        }
+
         return 0;
     }
 

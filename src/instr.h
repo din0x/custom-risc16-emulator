@@ -96,6 +96,33 @@ static const InstrInfo INSTR_INFOS[] = {
 
 static const size_t INSTR_INFO_COUNT = sizeof(INSTR_INFOS) / sizeof(*INSTR_INFOS);
 
+typedef struct {
+    uint8_t      encoding;
+    const char  *name;
+    const char  *role;
+} RegInfo;
+
+static const RegInfo REG_INFOS[] = {
+    { 0x0, NULL,    "General purpose" },
+    { 0x1, NULL,    "General purpose" },
+    { 0x2, NULL,    "General purpose" },
+    { 0x3, NULL,    "General purpose" },
+    { 0x4, NULL,    "General purpose" },
+    { 0x5, NULL,    "General purpose" },
+    { 0x6, NULL,    "General purpose" },
+    { 0x7, NULL,    "General purpose" },
+    { 0x8, NULL,    "General purpose" },
+    { 0x9, NULL,    "General purpose" },
+    { 0xa, NULL,    "General purpose" },
+    { 0xb, NULL,    "Reserved"        },
+    { 0xc, NULL,    "Reserved"        },
+    { 0xd, "flags", "Flags register"  },
+    { 0xe, "sp",    "Stack pointer"   },
+    { 0xf, "pc",    "Program counter" },
+};
+
+static const size_t REG_INFOS_COUNT = sizeof(REG_INFOS) / sizeof(*REG_INFOS);
+
 Layout layout_of_opcode(Opcode opcode);
 
 bool is_opcode_packed(Opcode opcode);
