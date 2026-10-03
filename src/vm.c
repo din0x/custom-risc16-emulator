@@ -145,33 +145,19 @@ uint16_t vm_pop_16(Vm *vm) {
 }
 
 void vm_do_call(Vm *vm, uint16_t target) {
-    uint16_t pc = vm->reg[REG_PC];
-
-    vm_push_8(vm, (pc >> 8) & 0xff);
-    if(vm->fault.err) {
+    vm_push_16(vm, vm->reg[REG_PC]);
+    if (vm->fault.err) {
         return;
     }
-
-    vm_push_8(vm, pc & 0xff);
-    if(vm->fault.err) {
-        return;
-    }
-
     vm->reg[REG_PC] = target;
 }
 
 void vm_do_ret(Vm *vm) {
-    uint16_t l = vm_pop_8(vm);
-    if(vm->fault.err) {
+    uint16_t pc = vm_pop_16(vm);
+    if (vm->fault.err) {
         return;
     }
-
-    uint16_t h = vm_pop_8(vm);
-    if(vm->fault.err) {
-        return;
-    }
-
-    vm->reg[REG_PC] = (h << 8) | l;
+    vm->reg[REG_PC] = pc;
 }
 
 void vm_dbg_dump(Vm *vm) {
