@@ -17,12 +17,12 @@ void result_deinit(Result *r);
     size_t __len = snprintf(NULL, 0, __VA_ARGS__);  \
     (__r)->err = (char *)malloc(__len + 1);         \
     snprintf((__r)->err, __len + 1, __VA_ARGS__);   \
-} while(0);
+} while(0)
 
 #define OK do {                                     \
     Result __result = { 0 };                        \
     return __result;                                \
-} while(0);
+} while(0)
 
 #define TRY(r) do {                                 \
     Result __result = r;                            \
