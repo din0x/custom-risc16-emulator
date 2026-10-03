@@ -48,4 +48,7 @@ void vm_do_call(Vm *vm, uint16_t target);
 void vm_do_ret(Vm *vm);
 void vm_dbg_dump(Vm *vm);
 
+void vm_push_16(Vm *vm, uint16_t val);
+uint16_t vm_pop_16(Vm *vm);
+
 #endif

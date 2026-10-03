@@ -32,6 +32,8 @@ Layout layout_of_opcode(Opcode opcode) {
         return LAYOUT_REG_IMM16;
 
     case OPCODE_CALL:
+    case OPCODE_PUSH16:
+    case OPCODE_POP16:
         return LAYOUT_REG;
 
     case OPCODE_CALL16:
@@ -218,8 +220,10 @@ static const InstrInfo INSTR_INFOS[] = {
 
     { "mov8",  OPCODE_MOV8, LAYOUT_REG_IMM8  },
     { "mov16", OPCODE_MOV16, LAYOUT_REG_IMM16 },
-    { "call",  OPCODE_CALL, LAYOUT_REG  },
-    { "calli",  OPCODE_CALL16, LAYOUT_IMM16 },
+    { "call",  OPCODE_CALL, LAYOUT_REG },
+    { "push16", OPCODE_PUSH16, LAYOUT_REG },
+    { "pop16", OPCODE_POP16, LAYOUT_REG },
+    { "calli", OPCODE_CALL16, LAYOUT_IMM16 },
 };
 
 const size_t INSTR_INFO_COUNT = sizeof INSTR_INFOS / sizeof *INSTR_INFOS;

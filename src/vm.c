@@ -89,6 +89,51 @@ void vm_push_8(Vm *vm, uint8_t val) {
     vm->fault = ram_write_8(&vm->ram, *sp, val);
 }
 
+void vm_push_16(Vm *vm, uint16_t val) {
+    uint16_t *sp = &vm->reg[REG_SP];
+
+    if(*sp < 2 || *sp - 2 < vm->stack_bound) {
+        ERR(&vm->fault, "stack overflow, sp=0x%04x, bound=0x%04x",
+            *sp, vm->stack_bound);
+        return;
+    }
+
+    *sp -= 2;
+
+    vm->fault = ram_write_8(&vm->ram, *sp,     (uint8_t)(val >> 8));
+    if(vm->fault.err) {
+        return;
+    }
+
+    vm->fault = ram_write_8(&vm->ram, *sp + 1, (uint8_t)(val & 0xff));
+}
+
+uint16_t vm_pop_16(Vm *vm) {
+    uint16_t *sp = &vm->reg[REG_SP];
+
+    if(*sp > vm->ram.size - 2) {
+        ERR(&vm->fault, "stack underflow, sp=0x%04x, size=0x%04x",
+            *sp, vm->ram.size);
+        return 0;
+    }
+
+    uint8_t hi, lo;
+
+    vm->fault = ram_read_8(&vm->ram, &hi, *sp);
+    if(vm->fault.err) {
+        return 0;
+    }
+
+    vm->fault = ram_read_8(&vm->ram, &lo, *sp + 1);
+    if(vm->fault.err) {
+        return 0;
+    }
+
+    *sp += 2;
+
+    return ((uint16_t)hi << 8) | lo;
+}
+
 void vm_do_call(Vm *vm, uint16_t target) {
     uint16_t pc = vm->reg[REG_PC];
 

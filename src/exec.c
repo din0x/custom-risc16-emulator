@@ -5,6 +5,7 @@
 #include "instr.h"
 #include "ram.h"
 #include "result.h"
+#include "vm.h"
 
 
 void exec_trap(Vm *vm) {
@@ -30,6 +31,12 @@ void exec_instr(Vm *vm, Instr instr) {
         vm_do_ret(vm);break;
     case OPCODE_CALL16:
         vm_do_call(vm, imm);
+        break;
+    case OPCODE_PUSH16:
+        vm_push_16(vm, *l);
+        break;
+    case OPCODE_POP16:
+        *l = vm_pop_16(vm);
         break;
     case OPCODE_DUMP:
         vm_dbg_dump(vm);

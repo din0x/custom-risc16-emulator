@@ -46,8 +46,8 @@ typedef enum : uint8_t {
     OPCODE_MOV8           = 0x80,
     OPCODE_MOV16          = 0x90,
     OPCODE_CALL           = 0xa0,
-
-    OPCODE_COUNT
+    OPCODE_PUSH16           = 0xb0,
+    OPCODE_POP16            = 0xc0,
 } Opcode;
 
 typedef struct {
