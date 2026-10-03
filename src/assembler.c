@@ -217,7 +217,7 @@ size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r, v
 
                 for(uint8_t i = 0; i < instr_size; i++) {
                     if(ptr >= cap) {
-                        ERR(&r, "code buffer overflow, cap=%d", cap);
+                        ERR(&r, "code buffer overflow, cap=%zu", cap);
                         cb(&r, cx);
                         result_deinit(&r);
                         goto defer;
