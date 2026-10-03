@@ -135,12 +135,12 @@ int main(int argc, char **argv) {
         }
 
         fseek(file, 0, SEEK_END);
-        long size = ftell(file);
+        long tell = ftell(file);
         fseek(file, 0, SEEK_SET);
 
-        uint8_t *src = malloc((size_t)size + 1);
+        uint8_t *src = malloc((size_t)tell + 1);
 
-        size_t read = fread(src, 1, (size_t)size, file);
+        size_t read = fread(src, 1, (size_t)tell, file);
         src[read] = '\0';
         fclose(file);
 
