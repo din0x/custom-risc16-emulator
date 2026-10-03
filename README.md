@@ -20,7 +20,7 @@ make clean                    # cleanup the target/ directory
 
 ## Usage
 
-```fish
+```
 Usage: risc16 [OPTIONS]
 
 Options:
