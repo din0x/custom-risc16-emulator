@@ -9,7 +9,7 @@
 uint8_t fetch_next_byte(Vm *vm, uint16_t offset) {
     uint16_t pc = vm->reg[REG_PC];
     uint8_t byte = 0;
-    ram_read_8(&vm->ram, &byte, pc + offset);
+    vm->fault = ram_read_8(&vm->ram, &byte, pc + offset);
     return byte;
 }
 
