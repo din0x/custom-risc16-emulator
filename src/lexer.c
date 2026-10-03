@@ -170,7 +170,13 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                         ERR(r, "invalid imm `%.*s`", len, start);
                         tk->kind = TOKEN_INVALID;
                         tk->value = 0;
-                    } else {
+                    }
+                    else if(n > 0xffff) {
+                        ERR(r, "imm to large 0x%lx", n);
+                        tk->kind = TOKEN_IMM;
+                        tk->value = 0;
+                    }
+                    else {
                         tk->kind = TOKEN_IMM;
                         tk->value = (uint16_t)n;
                     }
