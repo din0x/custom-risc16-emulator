@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "instr.h"
 #include "result.h"
+#include "vm.h"
 
 
 typedef struct {
@@ -131,6 +132,24 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                         tk->kind  = TOKEN_REG;
                         tk->value = (uint16_t)n;
                     }
+                }
+                else if(!strncmp(start, "pc", len)) {
+                    label->start = start;
+                    label->len = len;
+                    tk->kind  = TOKEN_REG;
+                    tk->value = (uint16_t)REG_PC;
+                }
+                else if(!strncmp(start, "sp", len)) {
+                    label->start = start;
+                    label->len = len;
+                    tk->kind  = TOKEN_REG;
+                    tk->value = (uint16_t)REG_SP;
+                }
+                else if(!strncmp(start, "flags", len)) {
+                    label->start = start;
+                    label->len = len;
+                    tk->kind  = TOKEN_REG;
+                    tk->value = (uint16_t)REG_FLAGS;
                 }
                 else if(isalpha(*start)) {
                     label->start = start;
