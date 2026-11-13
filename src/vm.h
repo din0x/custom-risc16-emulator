@@ -6,7 +6,7 @@
 #include "ram.h"
 #include "result.h"
 
-typedef enum : uint8_t {
+enum reg : uint8_t {
     REG_0      = 0x0,
     REG_1      = 0x1,
     REG_2      = 0x2,
@@ -30,25 +30,25 @@ typedef enum : uint8_t {
     REG_FLAGS  = REG_13,
     REG_SP     = REG_14,
     REG_PC     = REG_15,
-} Reg;
+};
 
-typedef struct Vm {
-    void        (*trap)(struct Vm *vm);
-    uint16_t    reg[16];
-    uint16_t    stack_bound;
-    bool        exit;
-    Ram         ram;
-    Result      fault;
-} Vm;
+struct vm {
+    void          (*trap)(struct vm *vm);
+    uint16_t      reg[16];
+    uint16_t      stack_bound;
+    bool          exit;
+    struct ram    ram;
+    struct result fault;
+};
 
-void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size);
-void vm_step(Vm *vm);
-void vm_run(Vm *vm);
-void vm_do_call(Vm *vm, uint16_t target);
-void vm_do_ret(Vm *vm);
-void vm_dbg_dump(Vm *vm);
+void vm_init(struct vm *vm, uint8_t *ram_buf, uint16_t ram_size);
+void vm_step(struct vm *vm);
+void vm_run(struct vm *vm);
+void vm_do_call(struct vm *vm, uint16_t target);
+void vm_do_ret(struct vm *vm);
+void vm_dbg_dump(struct vm *vm);
 
-void vm_push_16(Vm *vm, uint16_t val);
-uint16_t vm_pop_16(Vm *vm);
+void vm_push_16(struct vm *vm, uint16_t val);
+uint16_t vm_pop_16(struct vm *vm);
 
 #endif

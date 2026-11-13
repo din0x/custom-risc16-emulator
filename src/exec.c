@@ -8,7 +8,7 @@
 #include "vm.h"
 
 
-void exec_trap(Vm *vm) {
+void exec_trap(struct vm *vm) {
     if (vm->trap == NULL) {
         ERR(&vm->fault, "unhandled trap");
         return;
@@ -16,7 +16,7 @@ void exec_trap(Vm *vm) {
     (vm->trap)(vm);
 }
 
-void exec_instr(Vm *vm, Instr instr) {
+void exec_instr(struct vm *vm, struct instr instr) {
     uint16_t *l     = &vm->reg[instr.reg_l];
     uint16_t *r     = &vm->reg[instr.reg_r];
     uint16_t imm    = instr.imm;

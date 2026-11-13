@@ -9,27 +9,27 @@
 #include "result.h"
 
 
-struct Def {
+struct def {
     const char *name;
     size_t      len;
     uint16_t    val;
 };
 
-struct Link {
+struct link {
     const char *name;
     size_t      len;
     uint16_t    addr;
 };
 
-typedef enum : uint8_t {
+enum state : uint8_t {
     STATE_INSTR_OR_DEF,
     STATE_REG_L,
     STATE_REG_R,
     STATE_IMM,
     STATE_NEWLINE,
-} State;
+};
 
-void next_state_of_layout(State *state, Layout layout) {
+void next_state_of_layout(enum state *state, enum layout layout) {
     switch(*state) {
     case STATE_INSTR_OR_DEF:
         if(layout_uses_reg_l(layout)) {
@@ -76,16 +76,18 @@ size_t min_sz(size_t a, size_t b) {
     return a < b ? a : b;
 }
 
-size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r, void *cx), void *cx) {
-    const InstrInfo *info;
-    Instr instr = { 0 };
-    State state = STATE_INSTR_OR_DEF;
-    size_t  ptr = 0;
+size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(struct result *r, void *cx), void *cx) {
+    const struct instr_info *info;
+
+    struct instr instr = { 0 };
+    enum   state state = STATE_INSTR_OR_DEF;
+
+    size_t ptr = 0;
 
     const char *imm_label     = NULL;
     size_t      imm_label_len = 0; 
 
-    Result r = { 0 };
+    struct result r = { 0 };
 
     const size_t n = 64;
     char scratch[n + 1];
@@ -93,17 +95,17 @@ size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r, v
 
     size_t defs_count  = 0;
     size_t defs_cap    = 2048;
-    struct Def *defs   = malloc(defs_cap * sizeof(struct Def));
+    struct def *defs   = malloc(defs_cap * sizeof(struct def));
 
     size_t links_count = 0;
     size_t links_cap   = 2048;
-    struct Link *links = malloc(links_cap * sizeof(struct Link));
+    struct link *links = malloc(links_cap * sizeof(struct link));
 
     bool cond = true;
     while(cond) {
         size_t ate;
-        Token  tk    = { 0 };
-        Label  label = { 0 };
+        struct token tk    = { 0 };
+        struct label label = { 0 };
 
         if(*src) {
             ate = parse_token(src, &tk, &label, &r);
@@ -294,10 +296,10 @@ size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r, v
 
     for(size_t i = 0; i < links_count; i++) {
         bool linked = false;
-        struct Link link = links[i];
+        struct link link = links[i];
 
         for(size_t j = 0; j < defs_count; j++) {
-            struct Def def = defs[j];
+            struct def def = defs[j];
 
             if(link.len == def.len && !strncmp(link.name, def.name, min_sz(link.len, def.len))) {
                 code[link.addr]     = (def.val >> 8) & 0xff;

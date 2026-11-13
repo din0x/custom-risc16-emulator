@@ -3,16 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {
+enum cli_state {
     CLI_ANY,
     CLI_INPUT,
     CLI_OUTPUT,
     CLI_BIN,
-} CliState;
+};
 
-void parse_args(Args *args, int argc, char **argv) {
+void parse_args(struct args *args, int argc, char **argv) {
     memset(args, 0, sizeof(*args));
-    CliState cli = CLI_ANY;
+    enum cli_state cli = CLI_ANY;
 
     for(int i = 0; i < argc; i++) {
         if(!i) {

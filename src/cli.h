@@ -3,15 +3,15 @@
 
 #include <stdbool.h>
 
-typedef struct {
+struct args {
     const char *input;
     const char *bin;
     const char *output;
     bool        run;
     bool        help;
     bool        isa;
-} Args;
+};
 
-void parse_args(Args *args, int argc, char **argv);
+void parse_args(struct args *args, int argc, char **argv);
 
 #endif

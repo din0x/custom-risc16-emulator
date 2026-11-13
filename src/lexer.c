@@ -6,23 +6,17 @@
 #include "result.h"
 #include "vm.h"
 
-
-typedef struct {
-    const char *start;
-    size_t len;
-} Span;
-
-enum Parser {
+enum parser {
     PARSER_ANY       = 1,
     PARSER_COMMENT   = 2,
     PARSER_IDENT     = 3,
     PARSER_FINISHED  = 4,
 };
 
-void token_dump(char *s, size_t n, Token tk, Label label) {
+void token_dump(char *s, size_t n, struct token tk, struct label label) {
     switch(tk.kind) {
     case TOKEN_MNEMONIC:
-        const InstrInfo *info = instr_info_of_opcode((uint8_t)tk.value);
+        const struct instr_info *info = instr_info_of_opcode((uint8_t)tk.value);
         snprintf(s, n, "instr(%s)", info->mnemonic);
         break;
     case TOKEN_REG:
@@ -52,13 +46,13 @@ void token_dump(char *s, size_t n, Token tk, Label label) {
     }
 }
 
-size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
+size_t parse_token(const char *src, struct token *tk, struct label *label, struct result *r) {
     label->start = 0;
     label->len   = 0;
 
     const char *start = src;
 
-    enum Parser parser = PARSER_ANY;
+    enum parser parser = PARSER_ANY;
 
     const char *instr_or_operand_start = 0;
     size_t      instr_or_operand_len   = 0;
@@ -104,7 +98,7 @@ size_t parse_token(const char *src, Token *tk, Label *label, Result *r) {
                 size_t len = instr_or_operand_len;
                 const char *start = instr_or_operand_start;
 
-                const InstrInfo *info = instr_info_of_mnemonic(start, len);
+                const struct instr_info *info = instr_info_of_mnemonic(start, len);
 
                 if(info) {
                     tk->kind  = TOKEN_MNEMONIC;

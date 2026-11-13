@@ -8,21 +8,20 @@
 #include "result.h"
 #include "vm.h"
 
-
 const char *HELP;
 
-void trap_print_r3(Vm *vm) {
+void trap_print_r3(struct vm *vm) {
     printf("%d\n", vm->reg[REG_3]);
 }
 
-void cb(Result *r, bool *cx) {
+void cb(struct result *r, bool *cx) {
     *cx = true;
     if(r && r->err) {
         fprintf(stderr, "error: %s\n", r->err);
     }
 }
 
-void print_instr_info(const InstrInfo *info) {
+void print_instr_info(const struct instr_info *info) {
     char mnemonic[64];
     snprintf(mnemonic, sizeof(mnemonic), "%s,", info->mnemonic);
     printf("0x%02x, %-7s ", info->opcode, mnemonic);
@@ -103,7 +102,7 @@ void print_instr_info(const InstrInfo *info) {
     printf("\n");
 }
 
-void print_reg_info(const RegInfo *info) {
+void print_reg_info(const struct reg_info *info) {
     printf("r%d, ", info->encoding);
     if(info->encoding < 0xa) {
         printf(" ");
@@ -125,7 +124,7 @@ void print_reg_info(const RegInfo *info) {
 }
 
 int main(int argc, char **argv) {
-    Args args;
+    struct args args;
     parse_args(&args, argc, argv);
 
     if(args.help) {
@@ -137,14 +136,14 @@ int main(int argc, char **argv) {
         printf("Opcode, Mnemonic, Operands, Bits\n");
 
         for(size_t i = 0; i < INSTR_INFO_COUNT; i++) {
-            const InstrInfo *info = &INSTR_INFOS[i];
+            const struct instr_info *info = &INSTR_INFOS[i];
             print_instr_info(info);
         }
 
         printf("\nRegister, Encoding, Name, Role\n");
 
         for(size_t i = 0; i < REG_INFOS_COUNT; i++) {
-            const RegInfo *info = &REG_INFOS[i];
+            const struct reg_info *info = &REG_INFOS[i];
             print_reg_info(info);
         }
 
@@ -212,7 +211,7 @@ int main(int argc, char **argv) {
     }
 
     if(args.run) {
-        Vm vm = { 0 };
+        struct vm vm = { 0 };
         vm_init(&vm, code, size);
         vm.trap        = trap_print_r3;
         vm.stack_bound = 512;

@@ -4,7 +4,7 @@
 #include "vm.h"
 
 
-Layout layout_of_opcode(Opcode opcode) {
+enum layout layout_of_opcode(enum opcode opcode) {
     switch(opcode) {
     case OPCODE_HALT:
     case OPCODE_RET:
@@ -51,7 +51,7 @@ Layout layout_of_opcode(Opcode opcode) {
     }
 }
 
-size_t size_of_layout(Layout layout) {
+size_t size_of_layout(enum layout layout) {
     switch(layout) {
     case LAYOUT_NONE:
         return 1;
@@ -72,7 +72,7 @@ size_t size_of_layout(Layout layout) {
     }
 }
 
-uint32_t encode_instr(Instr instr) {
+uint32_t encode_instr(struct instr instr) {
     if(is_opcode_packed(instr.opcode) != is_layout_packed(instr.layout)) {
         printf("encode opcode and layout mismatch\n");
         return 0xffffffff;
@@ -103,7 +103,7 @@ uint32_t encode_instr(Instr instr) {
     }
 }
 
-Opcode opcode_from_byte(uint8_t opcode) {
+enum opcode opcode_from_byte(uint8_t opcode) {
     if(is_opcode_packed(opcode)) {
         opcode &= 0xf0;
     }
@@ -111,12 +111,12 @@ Opcode opcode_from_byte(uint8_t opcode) {
     return opcode;
 }
 
-Instr decode_instr(uint32_t raw) {
-    Instr instr = { 0 };
+struct instr decode_instr(uint32_t raw) {
+    struct instr instr = { 0 };
 
     uint8_t opcode = opcode_from_byte((raw >> 24) & 0xff);
 
-    Layout layout = layout_of_opcode(opcode);
+    enum layout layout = layout_of_opcode(opcode);
 
     if(is_opcode_packed(opcode) != is_layout_packed(layout)) {
         printf("decode opcode(0x%x) and layout(0x%x) mismatch\n", opcode, layout);
@@ -161,16 +161,16 @@ Instr decode_instr(uint32_t raw) {
     return instr;
 }
 
-bool is_opcode_packed(Opcode opcode) {
+bool is_opcode_packed(enum opcode opcode) {
     return (opcode & 0x80) != 0;
 }
 
-bool is_layout_packed(Layout layout) {
+bool is_layout_packed(enum layout layout) {
     return (layout & 0x80) != 0;
 }
 
-void instr_dump(Instr instr, const Vm *vm) {
-    const InstrInfo *info = instr_info_of_opcode(instr.opcode);
+void instr_dump(struct instr instr, const struct vm *vm) {
+    const struct instr_info *info = instr_info_of_opcode(instr.opcode);
 
     printf("%s", info->mnemonic);
     if(layout_uses_reg_l(info->layout)) {
@@ -192,7 +192,7 @@ void instr_dump(Instr instr, const Vm *vm) {
     }
 }
 
-const InstrInfo *instr_info_of_opcode(Opcode opcode) {
+const struct instr_info *instr_info_of_opcode(enum opcode opcode) {
     for (size_t i = 0; i < INSTR_INFO_COUNT; i++) {
         if (INSTR_INFOS[i].opcode == opcode) {
             return &INSTR_INFOS[i];
@@ -202,7 +202,7 @@ const InstrInfo *instr_info_of_opcode(Opcode opcode) {
     return NULL;
 }
 
-const InstrInfo *instr_info_of_mnemonic(const char *mnemonic, size_t len) {
+const struct instr_info *instr_info_of_mnemonic(const char *mnemonic, size_t len) {
     for (size_t i = 0; i < INSTR_INFO_COUNT; i++) {
         const char *mne = INSTR_INFOS[i].mnemonic;
         if (!strncmp(mne, mnemonic, len) && mne[len] == '\0') {
@@ -213,7 +213,7 @@ const InstrInfo *instr_info_of_mnemonic(const char *mnemonic, size_t len) {
     return NULL;
 }
 
-bool layout_uses_reg_l(Layout layout) {
+bool layout_uses_reg_l(enum layout layout) {
     return 
         layout == LAYOUT_REG ||
         layout == LAYOUT_REG_IMM16 ||
@@ -222,18 +222,18 @@ bool layout_uses_reg_l(Layout layout) {
         layout == LAYOUT_REG_REG_IMM16;
 }
 
-bool layout_uses_reg_r(Layout layout) {
+bool layout_uses_reg_r(enum layout layout) {
     return layout == LAYOUT_REG_REG || layout == LAYOUT_REG_REG_IMM16;
 }
 
-bool layout_uses_imm(Layout layout) {
+bool layout_uses_imm(enum layout layout) {
     return layout_uses_imm8(layout) || layout_uses_imm16(layout);
 }
 
-bool layout_uses_imm8(Layout layout) {
+bool layout_uses_imm8(enum layout layout) {
     return layout == LAYOUT_REG_IMM8;
 }
 
-bool layout_uses_imm16(Layout layout) {
+bool layout_uses_imm16(enum layout layout) {
     return layout == LAYOUT_REG_IMM16 || layout == LAYOUT_IMM16 || layout == LAYOUT_REG_REG_IMM16;
 }

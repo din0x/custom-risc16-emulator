@@ -3,9 +3,9 @@
 #include "result.h"
 
 
-Result ram_read_8(const Ram *ram, uint8_t *dst, uint16_t addr) {
+struct result ram_read_8(const struct ram *ram, uint8_t *dst, uint16_t addr) {
     if(addr >= ram->size) {
-        Result r = { 0 };
+        struct result r = { 0 };
         ERR(&r, "read(0x%x): out of bounds, size=0x%x", addr, ram->size);
         return r;
     }
@@ -14,7 +14,7 @@ Result ram_read_8(const Ram *ram, uint8_t *dst, uint16_t addr) {
     OK;
 }
 
-Result ram_read_16(const Ram *ram, uint16_t *dst, uint16_t addr) {
+struct result ram_read_16(const struct ram *ram, uint16_t *dst, uint16_t addr) {
     uint8_t h = 0, l = 0;
     TRY(ram_read_8(ram, &h, addr    ));
     TRY(ram_read_8(ram, &l, addr + 1));
@@ -22,9 +22,9 @@ Result ram_read_16(const Ram *ram, uint16_t *dst, uint16_t addr) {
     OK;
 }
 
-Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
+struct result ram_write_8(struct ram *ram, uint16_t addr, uint8_t val) {
     if(addr >= ram->size) {
-        Result r = { 0 };
+        struct result r = { 0 };
         ERR(&r, "write(0x%x): out of bounds, size=0x%x", addr, ram->size);
         return r;
     }
@@ -33,7 +33,7 @@ Result ram_write_8(Ram *ram, uint16_t addr, uint8_t val) {
     OK;
 }
 
-Result ram_write_16(Ram *ram, uint16_t addr, uint16_t val) {
+struct result ram_write_16(struct ram *ram, uint16_t addr, uint16_t val) {
     uint8_t h = (val & 0xff00) >> 8;
     uint8_t l =  val & 0xff;
 

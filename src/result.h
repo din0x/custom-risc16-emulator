@@ -5,12 +5,12 @@
 #include <stdio.h>
 
 
-typedef struct {
+struct result {
     char *err;
-} Result;
+};
 
-void result_init(Result *r);
-void result_deinit(Result *r);
+void result_init(struct result *r);
+void result_deinit(struct result *r);
 
 #define ERR(__r, ...) do {                          \
     result_deinit(__r);                             \
@@ -20,12 +20,12 @@ void result_deinit(Result *r);
 } while(0)
 
 #define OK do {                                     \
-    Result __result = { 0 };                        \
+    struct result __result = { 0 };                 \
     return __result;                                \
 } while(0)
 
 #define TRY(r) do {                                 \
-    Result __result = r;                            \
+    struct result __result = r;                     \
     if(__result.err) {                              \
         return __result;                            \
     }                                               \

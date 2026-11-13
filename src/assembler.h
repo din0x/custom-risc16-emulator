@@ -5,6 +5,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(Result *r, void *cx), void *cx);
+size_t assemble(const char *src, uint8_t *code, size_t cap, void cb(struct result *r, void *cx), void *cx);
 
 #endif

@@ -4,7 +4,7 @@
 #include "result.h"
 #include <stdint.h>
 
-typedef enum : uint8_t {
+enum token_kind : uint8_t {
     TOKEN_MNEMONIC,
     TOKEN_REG,
     TOKEN_IMM,
@@ -13,25 +13,20 @@ typedef enum : uint8_t {
     TOKEN_NEWLINE,
     TOKEN_INVALID,
     TOKEN_EOF,
-} TokenKind;
+};
 
-typedef struct {
+struct label {
     const char  *start;
     size_t       len;
-} Label;
+};
 
-typedef struct {
-    uint16_t  value;
-    TokenKind kind;
-} Token;
+struct token {
+    uint16_t        value;
+    enum token_kind kind;
+};
 
-typedef struct {
-    Token   *buf;
-    size_t   len;
-} Tokens;
+void token_dump(char *s, size_t n, struct token tk, struct label label);
 
-void token_dump(char *s, size_t n, Token tk, Label label);
-
-size_t parse_token(const char *src, Token *tk, Label *label, Result *r);
+size_t parse_token(const char *src, struct token *tk, struct label *label, struct result *r);
 
 #endif

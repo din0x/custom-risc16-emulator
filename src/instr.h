@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "vm.h"
 
-typedef enum : uint8_t {
+enum layout : uint8_t {
     LAYOUT_NONE           = 0b00000000,
     LAYOUT_REG_REG        = 0b00001100,
     LAYOUT_IMM16          = 0b00000011,
@@ -15,9 +15,9 @@ typedef enum : uint8_t {
     LAYOUT_REG_IMM16      = 0b10000010,
 
     LAYOUT_ILLEGAL        = 0xfe,
-} Layout;
+};
 
-typedef enum : uint8_t {
+enum opcode : uint8_t {
     OPCODE_RET            = 0x01,
     OPCODE_DUMP           = 0x02,
     OPCODE_TRAP           = 0x03,
@@ -48,22 +48,22 @@ typedef enum : uint8_t {
     OPCODE_CALL           = 0xa0,
     OPCODE_PUSH16           = 0xb0,
     OPCODE_POP16            = 0xc0,
-} Opcode;
+};
 
-typedef struct {
-    Layout    layout;
-    Opcode    opcode;
-    uint8_t   reg_l, reg_r;
-    uint16_t  imm;
-} Instr;
+struct instr {
+    enum layout layout;
+    enum opcode opcode;
+    enum reg    reg_l, reg_r;
+    uint16_t    imm;
+};
 
-typedef struct InstrInfo {
+struct instr_info {
     const char  *mnemonic;
-    Opcode       opcode;
-    Layout       layout;
-} InstrInfo;
+    enum opcode  opcode;
+    enum layout  layout;
+};
 
-static const InstrInfo INSTR_INFOS[] = {
+static const struct instr_info INSTR_INFOS[] = {
     { "ret",    OPCODE_RET,    LAYOUT_NONE          },
     { "dump",   OPCODE_DUMP,   LAYOUT_NONE          },
     { "trap",   OPCODE_TRAP,   LAYOUT_NONE          },
@@ -96,13 +96,13 @@ static const InstrInfo INSTR_INFOS[] = {
 
 static const size_t INSTR_INFO_COUNT = sizeof(INSTR_INFOS) / sizeof(*INSTR_INFOS);
 
-typedef struct {
+struct reg_info {
     uint8_t      encoding;
     const char  *name;
     const char  *role;
-} RegInfo;
+};
 
-static const RegInfo REG_INFOS[] = {
+static const struct reg_info REG_INFOS[] = {
     { 0x0, NULL,    "General purpose" },
     { 0x1, NULL,    "General purpose" },
     { 0x2, NULL,    "General purpose" },
@@ -123,25 +123,25 @@ static const RegInfo REG_INFOS[] = {
 
 static const size_t REG_INFOS_COUNT = sizeof(REG_INFOS) / sizeof(*REG_INFOS);
 
-Layout layout_of_opcode(Opcode opcode);
+enum layout layout_of_opcode(enum opcode opcode);
 
-bool is_opcode_packed(Opcode opcode);
-bool is_layout_packed(Layout layout);
+bool is_opcode_packed(enum opcode opcode);
+bool is_layout_packed(enum layout layout);
 
-size_t size_of_layout(Layout layout);
+size_t size_of_layout(enum layout layout);
 
-uint32_t encode_instr(Instr  instr);
-Instr    decode_instr(uint32_t raw);
+uint32_t encode_instr(struct instr  instr);
+struct instr decode_instr(uint32_t raw);
 
-void instr_dump(Instr instr, const Vm *vm);
+void instr_dump(struct instr instr, const struct vm *vm);
 
-bool layout_uses_reg_l(Layout layout);
-bool layout_uses_reg_r(Layout layout);
-bool layout_uses_imm  (Layout layout);
-bool layout_uses_imm8 (Layout layout);
-bool layout_uses_imm16(Layout layout);
+bool layout_uses_reg_l(enum layout layout);
+bool layout_uses_reg_r(enum layout layout);
+bool layout_uses_imm  (enum layout layout);
+bool layout_uses_imm8 (enum layout layout);
+bool layout_uses_imm16(enum layout layout);
 
-const InstrInfo *instr_info_of_opcode(Opcode opcode);
-const InstrInfo *instr_info_of_mnemonic(const char *mnemonic, size_t len);
+const struct instr_info *instr_info_of_opcode(enum opcode opcode);
+const struct instr_info *instr_info_of_mnemonic(const char *mnemonic, size_t len);
 
 #endif

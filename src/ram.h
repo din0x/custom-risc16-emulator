@@ -4,20 +4,15 @@
 #include <stdint.h>
 #include "result.h"
 
-typedef struct {
+struct ram {
     uint8_t *buf;
     uint16_t size;
-} Ram;
+};
 
-Result ram_read_8   (const Ram *ram, uint8_t  *dst, uint16_t addr);
-Result ram_read_16  (const Ram *ram, uint16_t *dst, uint16_t addr);
-Result ram_write_8  (Ram *ram, uint16_t addr, uint8_t   val);
-Result ram_write_16 (Ram *ram, uint16_t addr, uint16_t  val);
+struct result ram_read_8  (const struct ram *ram, uint8_t  *dst, uint16_t addr);
+struct result ram_read_16 (const struct ram *ram, uint16_t *dst, uint16_t addr);
 
-// uint8_t  ram_read8(Ram *ram, uint16_t addr);
-// uint16_t ram_read16(Ram *ram, uint16_t addr);
-
-// void ram_write8(Ram *ram, uint16_t addr, uint8_t val);
-// void ram_write16(Ram *ram, uint16_t addr, uint16_t val);
+struct result ram_write_8 (struct ram *ram, uint16_t addr, uint8_t   val);
+struct result ram_write_16(struct ram *ram, uint16_t addr, uint16_t  val);
 
 #endif

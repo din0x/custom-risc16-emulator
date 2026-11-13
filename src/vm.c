@@ -6,11 +6,11 @@
 #include "vm.h"
 
 
-uint8_t fetch_next_byte(Vm *vm, uint16_t offset) {
+uint8_t fetch_next_byte(struct vm *vm, uint16_t offset) {
     uint16_t pc = vm->reg[REG_PC];
     uint8_t byte = 0;
 
-    Result r = ram_read_8(&vm->ram, &byte, pc + offset);
+    struct result r = ram_read_8(&vm->ram, &byte, pc + offset);
     if(r.err) {
         result_deinit(&vm->fault);
         vm->fault = r;
@@ -19,7 +19,7 @@ uint8_t fetch_next_byte(Vm *vm, uint16_t offset) {
     return byte;
 }
 
-void vm_step(Vm *vm) {
+void vm_step(struct vm *vm) {
     uint32_t a = fetch_next_byte(vm, 0);
     uint32_t b = fetch_next_byte(vm, 1);
     uint32_t c = fetch_next_byte(vm, 2);
@@ -30,7 +30,7 @@ void vm_step(Vm *vm) {
         return;
     }
 
-    Instr instr = decode_instr(raw);
+    struct instr instr = decode_instr(raw);
     if(instr.opcode == 0xff) {
         ERR(&vm->fault, "decode error");
         return;
@@ -48,7 +48,7 @@ void vm_step(Vm *vm) {
     exec_instr(vm, instr);
 }
 
-void vm_run(Vm *vm) {
+void vm_run(struct vm *vm) {
     while (!vm->exit) {
         vm_step(vm);
 
@@ -58,7 +58,7 @@ void vm_run(Vm *vm) {
     }
 }
 
-void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size) {
+void vm_init(struct vm *vm, uint8_t *ram_buf, uint16_t ram_size) {
     memset(vm, 0, sizeof(*vm));
     result_init(&vm->fault);
     vm->stack_bound = 0xffff;
@@ -67,7 +67,7 @@ void vm_init(Vm *vm, uint8_t *ram_buf, uint16_t ram_size) {
     vm->reg[REG_SP] = ram_size;
 }
 
-uint8_t vm_pop_8(Vm *vm) {
+uint8_t vm_pop_8(struct vm *vm) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp >= vm->ram.size) {
@@ -87,7 +87,7 @@ uint8_t vm_pop_8(Vm *vm) {
     return val;
 }
 
-void vm_push_8(Vm *vm, uint8_t val) {
+void vm_push_8(struct vm *vm, uint8_t val) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp == 0 || *sp <= vm->stack_bound) {
@@ -99,7 +99,7 @@ void vm_push_8(Vm *vm, uint8_t val) {
     vm->fault = ram_write_8(&vm->ram, *sp, val);
 }
 
-void vm_push_16(Vm *vm, uint16_t val) {
+void vm_push_16(struct vm *vm, uint16_t val) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp < 2 || *sp - 2 < vm->stack_bound) {
@@ -118,7 +118,7 @@ void vm_push_16(Vm *vm, uint16_t val) {
     vm->fault = ram_write_8(&vm->ram, *sp + 1, (uint8_t)(val & 0xff));
 }
 
-uint16_t vm_pop_16(Vm *vm) {
+uint16_t vm_pop_16(struct vm *vm) {
     uint16_t *sp = &vm->reg[REG_SP];
 
     if(*sp > vm->ram.size - 2) {
@@ -144,7 +144,7 @@ uint16_t vm_pop_16(Vm *vm) {
     return ((uint16_t)hi << 8) | lo;
 }
 
-void vm_do_call(Vm *vm, uint16_t target) {
+void vm_do_call(struct vm *vm, uint16_t target) {
     vm_push_16(vm, vm->reg[REG_PC]);
     if (vm->fault.err) {
         return;
@@ -152,7 +152,7 @@ void vm_do_call(Vm *vm, uint16_t target) {
     vm->reg[REG_PC] = target;
 }
 
-void vm_do_ret(Vm *vm) {
+void vm_do_ret(struct vm *vm) {
     uint16_t pc = vm_pop_16(vm);
     if (vm->fault.err) {
         return;
@@ -160,7 +160,7 @@ void vm_do_ret(Vm *vm) {
     vm->reg[REG_PC] = pc;
 }
 
-void vm_dbg_dump(Vm *vm) {
+void vm_dbg_dump(struct vm *vm) {
     printf("-- dbg --\n");
     for (int i = 0; i < 16; i++) {
         printf("r%-2d=%5u (0x%04x)  ", i, vm->reg[i], vm->reg[i]);
