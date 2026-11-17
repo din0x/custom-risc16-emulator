@@ -2,7 +2,9 @@
 
 
 void result_init(struct result *r) {
-    r->err = NULL;
+    if(r) {
+        r->err = NULL;
+    }
 }
 
 void result_deinit(struct result *r) {
